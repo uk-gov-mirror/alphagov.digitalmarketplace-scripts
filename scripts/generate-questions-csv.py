@@ -16,7 +16,7 @@ Usage:
 
 Options:
   --question-set=<question-set-directory-name> i.e. one of 'declaration' or 'services'
-  --context=<yaml>
+  --context=<yaml> e.g. "lot: cloud-software"
   -h --help    show this message
 
 Example:
