@@ -37,7 +37,11 @@ sys.path.insert(0, '.')
 from docopt import docopt
 from dmapiclient import DataAPIClient
 from dmscripts.helpers.env_helpers import get_api_endpoint_from_stage
-from dmscripts.models.process_rules import format_datetime_string_as_date, remove_username_from_email_address
+from dmscripts.models.process_rules import (
+    format_datetime_string_as_date,
+    remove_username_from_email_address,
+    replace_newlines_with_spaces
+)
 from dmscripts.models.writecsv import csv_path
 from dmscripts.models import queries
 
@@ -135,6 +139,7 @@ CONFIGS = [
             'publishedAt': format_datetime_string_as_date,
             'emailAddress': remove_username_from_email_address,
             'clarificationQuestions': len,
+            'budgetRange': replace_newlines_with_spaces,
         },
         'sort_by': 'createdAt'
     },
