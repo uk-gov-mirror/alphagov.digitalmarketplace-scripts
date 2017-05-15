@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """
 PREREQUISITE: For document migration to work you'll need AWS credentials set up for the relevant environment:
               Save your aws_access_key_id and aws_secret_access_key in ~/.aws/credentials
