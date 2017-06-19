@@ -21,7 +21,7 @@ def get_live_briefs_with_new_questions_and_answers_between_two_dates(data_api_cl
     )]
 
 
-def main(number_of_days):
+def main(data_api_client, number_of_days):
     logger.info("Begin to send brief update notification emails")
 
     # get today at 8 in the morning

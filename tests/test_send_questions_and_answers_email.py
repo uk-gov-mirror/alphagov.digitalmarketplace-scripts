@@ -4,6 +4,7 @@ from freezegun import freeze_time
 from datetime import datetime
 
 from dmscripts.send_questions_and_answers_email import (
+    main,
     get_live_briefs_with_new_questions_and_answers_between_two_dates
 )
 
@@ -63,3 +64,20 @@ def test_get_live_briefs_with_new_questions_and_answers_between_two_dates():
             {"publishedAt": "2017-03-23T06:00:00.669156Z"}
         ]},
     ]
+
+
+@mock.patch('dmscripts.send_questions_and_answers_email.get_live_briefs_with_new_questions_and_answers_between_two_dates', autospec=True)
+def test_main_gets_live_briefs_for_one_day(get_live_briefs_with_new_questions_and_answers_between_two_dates):
+    with freeze_time('2017-04-19 08:00:00'):
+        main(mock.MagicMock(), 1)
+        get_live_briefs_with_new_questions_and_answers_between_two_dates.assert_called_once_with(
+            mock.ANY, datetime(2017, 4, 18, hour=8), datetime(2017, 4, 19, hour=8)
+        )
+
+@mock.patch('dmscripts.send_questions_and_answers_email.get_live_briefs_with_new_questions_and_answers_between_two_dates', autospec=True)
+def test_main_gets_live_briefs_for_three_days(get_live_briefs_with_new_questions_and_answers_between_two_dates):
+    with freeze_time('2017-04-19 08:00:00'):
+        main(mock.MagicMock(), 3)
+        get_live_briefs_with_new_questions_and_answers_between_two_dates.assert_called_once_with(
+            mock.ANY, datetime(2017, 4, 16, hour=8), datetime(2017, 4, 19, hour=8)
+        )
