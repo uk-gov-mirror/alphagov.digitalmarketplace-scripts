@@ -1,4 +1,5 @@
 import mock
+import pytest
 from freezegun import freeze_time
 
 from datetime import datetime
@@ -65,19 +66,14 @@ def test_get_live_briefs_with_new_questions_and_answers_between_two_dates():
         ]},
     ]
 
-
+@pytest.mark.parametrize("number_of_days,start_date,end_date", [
+    (1, datetime(2017, 4, 18, hour=8), datetime(2017, 4, 19, hour=8)),
+    (3, datetime(2017, 4, 16, hour=8), datetime(2017, 4, 19, hour=8))
+])
 @mock.patch('dmscripts.send_questions_and_answers_email.get_live_briefs_with_new_questions_and_answers_between_two_dates', autospec=True)
-def test_main_gets_live_briefs_for_one_day(get_live_briefs_with_new_questions_and_answers_between_two_dates):
+def test_main_gets_live_briefs_correct_number_of_days(get_live_briefs_with_new_questions_and_answers_between_two_dates, number_of_days, start_date, end_date):
     with freeze_time('2017-04-19 08:00:00'):
-        main(mock.MagicMock(), 1)
+        main(mock.MagicMock(), number_of_days)
         get_live_briefs_with_new_questions_and_answers_between_two_dates.assert_called_once_with(
-            mock.ANY, datetime(2017, 4, 18, hour=8), datetime(2017, 4, 19, hour=8)
-        )
-
-@mock.patch('dmscripts.send_questions_and_answers_email.get_live_briefs_with_new_questions_and_answers_between_two_dates', autospec=True)
-def test_main_gets_live_briefs_for_three_days(get_live_briefs_with_new_questions_and_answers_between_two_dates):
-    with freeze_time('2017-04-19 08:00:00'):
-        main(mock.MagicMock(), 3)
-        get_live_briefs_with_new_questions_and_answers_between_two_dates.assert_called_once_with(
-            mock.ANY, datetime(2017, 4, 16, hour=8), datetime(2017, 4, 19, hour=8)
+            mock.ANY, start_date, end_date
         )
