@@ -139,7 +139,10 @@ def test_get_ids_of_suppliers_who_asked_a_clarification_question():
         {"auditEvents": []}
     )
 
-    assert get_ids_of_suppliers_who_asked_a_clarification_question(data_api_client, briefs) == {1: [11111, 11111, 11112], 2: [11111], 3: []}
+    assert get_ids_of_suppliers_who_asked_a_clarification_question(data_api_client, briefs) == {
+        1: [11111, 11111, 11112], 2: [11111], 3: []
+    }
+
 
 @pytest.mark.parametrize("number_of_days,start_date,end_date", [
     (1, datetime(2017, 4, 18, hour=8), datetime(2017, 4, 19, hour=8)),
