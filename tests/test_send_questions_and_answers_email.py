@@ -8,7 +8,8 @@ from dmscripts.send_questions_and_answers_email import (
     main,
     get_live_briefs_with_new_questions_and_answers_between_two_dates,
     get_ids_of_suppliers_who_started_applying,
-    get_ids_of_suppliers_who_asked_a_clarification_question
+    get_ids_of_suppliers_who_asked_a_clarification_question,
+    get_ids_of_interested_suppliers_for_briefs
 )
 
 ALL_BRIEFS = [
@@ -109,6 +110,42 @@ def test_get_ids_of_suppliers_who_asked_a_clarification_question(brief, audit_ev
     data_api_client.find_audit_events.return_value = audit_events
 
     assert get_ids_of_suppliers_who_asked_a_clarification_question(data_api_client, brief) == expected_result
+
+
+@mock.patch(
+    'dmscripts.send_questions_and_answers_email.get_ids_of_suppliers_who_asked_a_clarification_question',
+    autospec=True
+)
+@mock.patch('dmscripts.send_questions_and_answers_email.get_ids_of_suppliers_who_started_applying', autospec=True)
+def test_get_ids_of_interested_suppliers_for_briefs(
+    get_ids_of_suppliers_who_started_applying,
+    get_ids_of_suppliers_who_asked_a_clarification_question
+):
+    briefs = FILTERED_BRIEFS
+
+    get_ids_of_suppliers_who_started_applying.side_effect = (
+        [11111, 11112],
+        [11111],
+        []
+    )
+
+    get_ids_of_suppliers_who_asked_a_clarification_question.side_effect = (
+        [11111, 11111, 11113],
+        [],
+        [11111, 11112]
+    )
+
+    briefs_and_suppliers = get_ids_of_interested_suppliers_for_briefs(mock.Mock(), briefs)
+
+    expected_result = {
+        FILTERED_BRIEFS[0]["id"]: [11111, 11112, 11113],
+        FILTERED_BRIEFS[1]["id"]: [11111],
+        FILTERED_BRIEFS[2]["id"]: [11111, 11112]
+    }
+
+    for brief_id, supplier_ids in briefs_and_suppliers.items():
+        assert brief_id in expected_result.keys()
+        assert sorted(supplier_ids) == expected_result[brief_id]
 
 
 @pytest.mark.parametrize("number_of_days,start_date,end_date", [
