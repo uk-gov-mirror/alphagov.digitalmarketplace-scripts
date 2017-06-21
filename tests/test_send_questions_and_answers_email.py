@@ -9,7 +9,8 @@ from dmscripts.send_questions_and_answers_email import (
     get_live_briefs_with_new_questions_and_answers_between_two_dates,
     get_ids_of_suppliers_who_started_applying,
     get_ids_of_suppliers_who_asked_a_clarification_question,
-    get_ids_of_interested_suppliers_for_briefs
+    get_ids_of_interested_suppliers_for_briefs,
+    invert_brief_ids_and_supplier_ids
 )
 
 ALL_BRIEFS = [
@@ -167,3 +168,18 @@ def test_main_gets_live_briefs_correct_number_of_days(
         get_live_briefs_with_new_questions_and_answers_between_two_dates.assert_called_once_with(
             mock.ANY, start_date, end_date
         )
+
+def test_invert_brief_ids_and_supplier_ids():
+    dictionary_to_invert = {
+        FILTERED_BRIEFS[0]["id"]: [11111, 11112, 11113],
+        FILTERED_BRIEFS[1]["id"]: [11111],
+        FILTERED_BRIEFS[2]["id"]: [11111, 11112]
+    }
+
+    expected_result = {
+        11111: [FILTERED_BRIEFS[0]["id"], FILTERED_BRIEFS[1]["id"], FILTERED_BRIEFS[2]["id"]],
+        11112: [FILTERED_BRIEFS[0]["id"], FILTERED_BRIEFS[2]["id"]],
+        11113: [FILTERED_BRIEFS[0]["id"]]
+    }
+
+    assert invert_brief_ids_and_supplier_ids(dictionary_to_invert) == expected_result

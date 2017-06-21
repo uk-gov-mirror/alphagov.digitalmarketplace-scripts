@@ -45,6 +45,36 @@ def get_ids_of_interested_suppliers_for_briefs(data_api_client, briefs):
     return interested_suppliers
 
 
+def invert_brief_ids_and_supplier_ids(dic):
+    """
+    This function takes a dictionary where its keys are brief ids and its values are lists of supplier ids
+    and returns a dictionary where its keys are supplier ids and its values are lists of brief ids
+
+    In:
+    {
+        1: [11111, 11112],
+        2: [11112, 11113],
+        3: []
+    }
+
+    Out:
+    {
+        11111: [1],
+        11112: [1, 2],
+        11113: [2]
+    }
+    """
+
+    inverted_dic = {}
+    for brief_id, list_of_supplier_ids in dic.items():
+        assert isinstance(list_of_supplier_ids, list)
+        for supplier_id in list_of_supplier_ids:
+            # set empty list as default if key hasn't been assigned and then append a value
+            # if the key has been assigned, the new value will be appended to the existing list
+            inverted_dic.setdefault(supplier_id, []).append(brief_id)
+
+    return inverted_dic
+
 def main(data_api_client, number_of_days):
     logger.info("Begin to send brief update notification emails")
 
