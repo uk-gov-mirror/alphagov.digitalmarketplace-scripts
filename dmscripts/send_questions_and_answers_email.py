@@ -86,8 +86,19 @@ def main(data_api_client, number_of_days):
     # we need to find the briefs
     briefs = get_live_briefs_with_new_questions_and_answers_between_two_dates(data_api_client, start_date, end_date)
 
-    # we want to find all questions and answers that were submitted between start and end dates
+    # get all of the interested suppliers for each brief
+    brief_ids_and_interested_supplier_ids = get_ids_of_interested_suppliers_for_briefs(data_api_client, briefs)
 
-    # look for people who have asked clarification questions
-    # data_api_client.find_audit_events(
-    # audit_type=dmapiclient.audit.AuditTypes.send_clarification_question, audit_date=start_date.strftime('%Y-%m-%d'))
+    # invert the data so that we have a dict of supplier ids pointing to a list of briefs they are interested in
+    supplier_ids_and_interested_brief_ids = invert_brief_ids_and_supplier_ids(brief_ids_and_interested_supplier_ids)
+
+    # for each supplier, write the email text
+    for supplier_id, brief_ids in supplier_ids_and_interested_brief_ids.items():
+
+
+    # for each supplier, get all users
+
+    # for each user, blast the email
+
+
+
