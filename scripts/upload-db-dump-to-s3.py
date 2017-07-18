@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 """
 Usage: scripts/upload-db-dump-to-s3.py <stage> <file_path>
 """
