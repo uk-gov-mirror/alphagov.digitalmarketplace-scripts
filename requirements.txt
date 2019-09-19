@@ -27,8 +27,13 @@ yq==2.7.2
 asn1crypto==0.24.0
 attrs==19.1.0
 blinker==1.4
+<<<<<<< HEAD
 boto3==1.9.233
 botocore==1.12.233
+=======
+boto3==1.9.231
+botocore==1.12.228
+>>>>>>> 75d56aa... make freeze
 certifi==2019.9.11
 cffi==1.12.3
 chardet==3.0.4
