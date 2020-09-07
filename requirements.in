@@ -18,3 +18,4 @@ python-dateutil==2.8.1
 unicodecsv==0.14.1
 xeger==0.3.5
 yq==2.10.1
+pyPDF2==1.26.0
