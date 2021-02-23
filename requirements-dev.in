@@ -11,5 +11,8 @@ lxml
 mock<4.0.0
 pytest
 requests-mock
+jupyter
+pandas
+sklearn
 
 digitalmarketplace-test-utils
