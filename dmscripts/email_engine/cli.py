@@ -5,15 +5,6 @@ import os
 import sys
 
 
-# TODO: backport of PEP-616, remove when using Python 3.9
-def removesuffix(s: str, suffix: str) -> str:
-    # suffix='' should not call s[:-0].
-    if suffix and s.endswith(suffix):
-        return s[: -len(suffix)]
-    else:
-        return s[:]
-
-
 # copied from https://stackoverflow.com/a/10551190
 class EnvDefault(argparse.Action):
     def __init__(self, envvar, required=True, default=None, **kwargs):
@@ -44,7 +35,7 @@ def argument_parser_factory(
 
     p.add_argument(
         "--reference",
-        default=reference or removesuffix(sys.argv[0], ".py"),
+        default=reference or Path(sys.argv[0]).stem,
         help=(
             "Identifer to reference all the emails sent by this script (sent to Notify)."
             " Defaults to the name of the script."
@@ -72,7 +63,7 @@ def argument_parser_factory(
         action=EnvDefault,
         envvar="DM_NOTIFY_API_KEY",
         help="Can also be set with environment variable DM_NOTIFY_API_KEY.",
-        required=False,
+        required=True,
     )
     p.add_argument(
         "--dry-run", "-n", action="store_true", help="Do not send notifications."
