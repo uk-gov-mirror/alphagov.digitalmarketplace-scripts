@@ -52,8 +52,9 @@ if __name__ == "__main__":
 
     list_of_brief_response_ids = list(map(int, args.brief_response_ids.split(','))) if args.brief_response_ids else None
 
+    loglevel = logging.INFO if args.verbose else logging.WARN
     logger = logging_helpers.configure_logger(
-        {"dmapiclient": logging.INFO} if args.verbose else {"dmapiclient": logging.WARN}
+        {"dmapiclient": loglevel, "dmscripts.email_engine": loglevel}
     )
 
     # Do send
