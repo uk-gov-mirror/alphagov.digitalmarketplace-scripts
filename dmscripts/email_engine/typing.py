@@ -1,5 +1,6 @@
+import argparse
 from ast import literal_eval
-from typing import Dict
+from typing import Callable, Dict, Generator, Union
 
 
 class EmailNotification(dict):
@@ -47,3 +48,8 @@ class NotificationResponse(dict):
     def from_str(cls, s: str) -> "NotificationResponse":
         """parse a dict literal representation of a NotificationResponse"""
         return cls(**literal_eval(s))
+
+
+NotificationsGenerator = Generator[EmailNotification, None, None]
+NotificationsGeneratorFunction = Callable[[argparse.Namespace], NotificationsGenerator]
+Notifications = Union[NotificationsGenerator, NotificationsGeneratorFunction]

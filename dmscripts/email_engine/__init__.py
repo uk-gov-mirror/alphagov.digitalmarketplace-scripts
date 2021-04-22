@@ -14,7 +14,6 @@
 """
 from typing import (
     Callable,
-    Generator,
     List,
     Optional,
 )
@@ -25,15 +24,13 @@ import logging
 from notifications_python_client.notifications import NotificationsAPIClient
 
 from .cli import argument_parser_factory
-from .typing import EmailNotification, NotificationResponse
+from .typing import EmailNotification, NotificationResponse, Notifications
 from .logger import AUDIT
 from .queue import run
 
 
 def email_engine(
-    notifications: Callable[
-        [argparse.Namespace], Generator[EmailNotification, None, None]
-    ],
+    notifications: Notifications,
     *,
     argv: Optional[List[str]] = None,
     reference: Optional[str] = None,
@@ -63,7 +60,8 @@ def email_engine(
     root_logger.setLevel(AUDIT)
 
     # prepare the state
-    notifications_g = notifications(args)
+    if callable(notifications):
+        notifications = notifications(args)
 
     notify_client = NotificationsAPIClient(args.notify_api_key)
 
@@ -89,7 +87,7 @@ def email_engine(
     try:
         # do the thing
         done = run(
-            send_email_notification, notifications=notifications_g, logfile=args.logfile
+            send_email_notification, notifications=notifications, logfile=args.logfile
         )
     except KeyboardInterrupt:
         logging.warn("email engine interrupted by user")
