@@ -32,6 +32,7 @@ from .queue import run
 def email_engine(
     notifications: Notifications,
     *,
+    args: Optional[argparse.Namespace] = None,
     argv: Optional[List[str]] = None,
     reference: Optional[str] = None,
     logfile: Optional[Path] = None,
@@ -45,10 +46,12 @@ def email_engine(
     :param notifications:  a generator function that yields `EmailNotification`s to send
     :param argv:  list of strings to parse. The default is taken from `sys.argv`.
     """
+    # if arguments aren't supplied
     # get the configuration from the command line arguments
-    args = argument_parser_factory(reference=reference, logfile=logfile).parse_args(
-        argv
-    )
+    if args is None:
+        args = argument_parser_factory(
+            reference=reference, logfile=logfile
+        ).parse_args(argv)
 
     # configure logging
     #
