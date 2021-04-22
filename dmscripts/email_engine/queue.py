@@ -64,7 +64,7 @@ def run(
     """
     queue = LoggingQueue()
 
-    exhausted = queue.put_from_logfile(logfile)
+    read_lines, exhausted = queue.put_from_logfile(logfile)
 
     # If you are doing a a re-run and the iterator of notifications in the
     # original run was exhausted, then we don't iterate again.
@@ -78,8 +78,12 @@ def run(
     #
     # The downside is how do you handle the scenario where the original
     # generator wasn't exhausted... for now we just crash.
-    if queue.todo and exhausted:
+    if read_lines and not queue.todo:
+        logger.info("nothing left to do!")
+
+    elif queue.todo and exhausted:
         # throw the generator away
+        logger.info("resuming from log file")
         del notifications
 
     elif queue.todo and not exhausted:
@@ -88,7 +92,8 @@ def run(
             "in the logs for the original run the notifications generator was not exhausted, refusing to proceed"
         )
 
-    elif not exhausted:
+    elif not read_lines:
+        logger.info("getting notifications to send from API")
         queue.put_from(notifications)
 
     else:
@@ -189,7 +194,7 @@ class LoggingQueue:
         """
         count = 0
         for notification in notifications:
-            self.put(notification)
+            self.put(EmailNotification(**notification))  # TODO: remove hack to allow plain dict
             count += 1
         logger.audit(self.put_from_msg.format(generator=notifications, count=count))
         return count
