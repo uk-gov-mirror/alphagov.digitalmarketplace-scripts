@@ -28,6 +28,10 @@ class EnvDefault(argparse.Action):
         setattr(namespace, self.dest, values)
 
 
+# singleton argument parser
+_argument_parser: Optional[argparse.ArgumentParser] = None
+
+
 def argument_parser_factory(
     *, reference=None, logfile: Path = None
 ) -> argparse.ArgumentParser:
@@ -89,10 +93,6 @@ def argument_parser_factory(
     )
 
     return p
-
-
-# singleton argument parser
-_argument_parser: Optional[argparse.ArgumentParser] = None
 
 
 if __name__ == "__main__":
