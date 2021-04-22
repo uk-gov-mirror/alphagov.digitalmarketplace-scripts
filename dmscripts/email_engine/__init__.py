@@ -1,7 +1,22 @@
+"""Framework for sending emails from scripts via Notify
+
+::
+    from dmscripts.email_engine import EmailNotification, email_engine
+
+    def notifications_generator(*args, **kwargs):
+        # generate emails to be sent by calling the DMp API
+        ...
+        yield EmailNotification(...)
+
+    if __name__ == "__main__":
+        email_engine(notifications_generator)
+
+"""
 from typing import (
     Callable,
     Generator,
     List,
+    Optional,
 )
 from pathlib import Path
 import argparse
@@ -16,14 +31,23 @@ from .queue import run
 
 
 def email_engine(
-    notifications_generator: Callable[
+    notifications: Callable[
         [argparse.Namespace], Generator[EmailNotification, None, None]
     ],
     *,
-    argv: List[str] = None,
-    reference: str = None,
-    logfile: Path = None,
+    argv: Optional[List[str]] = None,
+    reference: Optional[str] = None,
+    logfile: Optional[Path] = None,
 ):
+    """Send emails via Notify
+
+    Send emails produced by generator function `notifications` and log progress
+    to disk. If interrupted `email_engine()` has the ability to resume by
+    reading its own log file.
+
+    :param notifications:  a generator function that yields `EmailNotification`s to send
+    :param argv:  list of strings to parse. The default is taken from `sys.argv`.
+    """
     # get the configuration from the command line arguments
     args = argument_parser_factory(reference=reference, logfile=logfile).parse_args(
         argv
@@ -39,7 +63,7 @@ def email_engine(
     root_logger.setLevel(AUDIT)
 
     # prepare the state
-    notifications_g = notifications_generator(args)
+    notifications_g = notifications(args)
 
     notify_client = NotificationsAPIClient(args.notify_api_key)
 
