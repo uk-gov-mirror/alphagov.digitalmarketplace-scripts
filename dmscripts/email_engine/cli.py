@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 import argparse
 import os
 import sys
@@ -30,7 +31,12 @@ class EnvDefault(argparse.Action):
 def argument_parser_factory(
     *, reference=None, logfile: Path = None
 ) -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(usage="%(prog)s [-h] [options]")
+    global _argument_parser
+    if _argument_parser:
+        return _argument_parser
+
+    _argument_parser = argparse.ArgumentParser(usage="%(prog)s [-h] [options]")
+    p = _argument_parser
 
     p.add_argument(
         "--reference",
@@ -83,6 +89,10 @@ def argument_parser_factory(
     )
 
     return p
+
+
+# singleton argument parser
+_argument_parser: Optional[argparse.ArgumentParser] = None
 
 
 if __name__ == "__main__":
