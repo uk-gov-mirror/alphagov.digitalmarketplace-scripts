@@ -10,7 +10,6 @@ Usage:
 
 Options:
     -h, --help                                      Display this screen
-    -v, --verbose                                   Verbosity level
     --dry-run                                       Log without sending emails
     --brief_response_ids=<brief_response_ids>       (for resending failures)
 
@@ -44,6 +43,7 @@ if __name__ == "__main__":
         help="Notify applicants to briefs awarded on this date, defaults to yesterday (date format: YYYY-MM-DD)"
     )
     arg_parser.add_argument("--brief-response-ids", help="List of brief response IDs to send to")
+    arg_parser.add_argument("--verbose", help="Verbosity level", action="store_true")
 
     args = arg_parser.parse_args()
 
@@ -51,6 +51,10 @@ if __name__ == "__main__":
                                     auth_token=get_auth_token('api', args.stage))
 
     list_of_brief_response_ids = list(map(int, args.brief_response_ids.split(','))) if args.brief_response_ids else None
+
+    logger = logging_helpers.configure_logger(
+        {"dmapiclient": logging.INFO} if args.verbose else {"dmapiclient": logging.WARN}
+    )
 
     # Do send
     email_engine(
@@ -62,5 +66,5 @@ if __name__ == "__main__":
             awarded_at=args.awarded_at,
             brief_response_ids=list_of_brief_response_ids,
         ),
-        args
+        args=args
     )
