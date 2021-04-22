@@ -82,8 +82,8 @@ def argument_parser_factory(
         "--stage",
         action=EnvDefault,
         envvar="DM_ENVIRONMENT",
-        help="Can also be set with environment variable DM_ENVIRONMENT.",
-        required=False
+        help="Stage/environment to make API calls to. Can also be set with environment variable DM_ENVIRONMENT.",
+        required=True,
     )
 
     p.add_argument(
