@@ -34,6 +34,7 @@ from dmscripts.helpers.email_helpers import scripts_notify_client
 from dmscripts.helpers.auth_helpers import get_auth_token
 from dmscripts.helpers import logging_helpers
 from dmscripts.notify_suppliers_of_awarded_briefs import main
+from dmscripts.email_engine import email_engine
 from dmutils.env_helpers import get_api_endpoint_from_stage
 
 
@@ -60,16 +61,13 @@ if __name__ == "__main__":
     list_of_brief_response_ids = list(map(int, brief_response_ids.split(','))) if brief_response_ids else None
 
     # Do send
-    ok = main(
-        data_api_client=data_api_client,
-        mail_client=notify_client,
-        template_id=govuk_notify_template_id,
-        stage=stage,
-        logger=logger,
-        awarded_at=awarded_at,
-        brief_response_ids=list_of_brief_response_ids,
-        dry_run=dry_run,
+    email_engine(
+        main(
+            data_api_client=data_api_client,
+            template_id=govuk_notify_template_id,
+            stage=stage,
+            logger=logger,
+            awarded_at=awarded_at,
+            brief_response_ids=list_of_brief_response_ids,
+        )
     )
-
-    if not ok:
-        sys.exit(1)

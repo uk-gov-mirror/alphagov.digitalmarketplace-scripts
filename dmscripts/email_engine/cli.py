@@ -68,6 +68,20 @@ def argument_parser_factory(
         "--dry-run", "-n", action="store_true", help="Do not send notifications."
     )
 
+    p.add_argument(
+        "--stage",
+        action=EnvDefault,
+        envvar="DM_ENVIRONMENT",
+        help="Can also be set with environment variable DM_ENVIRONMENT.",
+        required=False
+    )
+
+    p.add_argument(
+        "--notify-template-id",
+        help="The Notify template ID for this email",
+        required=False
+    )
+
     return p
 
 
